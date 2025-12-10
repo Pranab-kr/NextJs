@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { users } from "../home/route";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { name } = await request.json();
     if (!name) {

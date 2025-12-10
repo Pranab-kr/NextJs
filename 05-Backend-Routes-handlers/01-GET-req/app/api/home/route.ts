@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 // interface Users {
 //   id: number;
@@ -15,7 +15,7 @@ const users: Users[] = [
   { id: 2, name: "Jane Smith" },
 ];
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     return NextResponse.json(users);
   } catch (error) {
