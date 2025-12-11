@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { apiClient } from "@/lib/apiClient";
 import toast from "react-hot-toast";
 
-interface Note {
+export interface Note {
   _id: string;
   title: string;
   content: string;
@@ -18,31 +18,13 @@ interface Note {
   updatedAt: Date;
 }
 
-export function NotesApp() {
-  const [notes, setNotes] = useState<Note[]>([]);
+export function NotesApp({ notes: initialNotes }: { notes: Note[] }) {
+  const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editContent, setEditContent] = useState("");
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Load notes from the mongo DB on component mount
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const res = await apiClient.get("/notes");
-
-        setNotes(res.data);
-      } catch (error) {
-        console.error("Failed to fetch notes:", error);
-      } finally {
-        setIsLoaded(true);
-      }
-    };
-
-    fetchNotes();
-  }, []);
 
   // Create a new note and store in the DB
   const handleAddNote = async () => {
@@ -53,7 +35,7 @@ export function NotesApp() {
         title: newTitle,
         content: newContent,
       });
-      setNotes([...notes, res.data]);
+      setNotes([res.data, ...notes]);
       toast.success("Note added successfully!");
 
       setNewTitle("");
@@ -121,14 +103,6 @@ export function NotesApp() {
       toast.error("Failed to delete note.");
     }
   };
-
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground">Loading...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">

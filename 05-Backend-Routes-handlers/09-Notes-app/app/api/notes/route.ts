@@ -20,18 +20,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// does't need this cause page server component fetches notes directly from DB
 //GET all notes
-export async function GET() {
-  try {
-    await connectToDB();
+// export async function GET() {
 
-    const notes = await Note.find().sort({ updatedAt: -1 });
+//   try {
+//     await connectToDB();
 
-    return NextResponse.json(notes, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch notes." },
-      { status: 500 }
-    );
-  }
-}
+//     const notes = await Note.find().sort({ updatedAt: -1 });
+
+//     return NextResponse.json(notes, { status: 200 });
+//   } catch (error) {
+//     return NextResponse.json(
+//       { error: "Failed to fetch notes." },
+//       { status: 500 }
+//     );
+//   }
+// }
