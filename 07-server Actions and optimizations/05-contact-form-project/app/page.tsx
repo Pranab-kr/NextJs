@@ -3,7 +3,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 
 const HomePage = () => {
   return (
-    <main className="min-h-screen px-4 py-12 flex flex-col gap-12">
+    <main className="min-h-screen px-4 py-12 flex flex-col items-center gap-12">
       <nav className="absolute top-4 right-4">
         <ModeToggle />
       </nav>

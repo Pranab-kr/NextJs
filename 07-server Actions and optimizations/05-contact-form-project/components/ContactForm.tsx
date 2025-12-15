@@ -13,15 +13,36 @@ import {
 import { Field, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { createContact } from "@/actions";
+import { toastManager } from "@/components/ui/toast";
+import { Spinner } from "./ui/spinner";
 
 const ContactForm = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
 
   const onSubmit = async (formData: FormData) => {
-    // "use server";
-    //todo
+    setIsSubmitting(true);
+
+    const result = await createContact(formData);
+
+    if (result.success) {
+      console.log("Message sent successfully:", result);
+
+      toastManager.add({
+        title: "Message Sent Successfully",
+        description: "Your message has been sent successfully.",
+        type: "success",
+      });
+    } else {
+      console.log(
+        "Error sending message:",
+        result.error || "An error occurred. Please try again."
+      );
+    }
+
+    setIsSubmitting(false);
   };
+
   return (
     <div className="flex w-full items-center justify-center">
       <Card className="w-full max-w-lg">
@@ -38,7 +59,6 @@ const ContactForm = () => {
               <Field>
                 <FieldLabel>Name</FieldLabel>
                 <Input
-                  id="name"
                   name="name"
                   placeholder="Name of your project"
                   type="text"
@@ -46,17 +66,11 @@ const ContactForm = () => {
               </Field>
               <Field>
                 <FieldLabel>Email</FieldLabel>
-                <Input
-                  id="email"
-                  name="email"
-                  placeholder="Email address"
-                  type="email"
-                />
+                <Input name="email" placeholder="Email address" type="email" />
               </Field>
               <Field>
                 <FieldLabel>Subject</FieldLabel>
                 <Input
-                  id="subject"
                   name="subject"
                   placeholder="Subject of your message"
                   type="text"
@@ -64,15 +78,18 @@ const ContactForm = () => {
               </Field>
               <Field>
                 <FieldLabel>Message</FieldLabel>
-                <Textarea
-                  id="message"
-                  name="message"
-                  placeholder="Your message"
-                />
+                <Textarea name="message" placeholder="Your message" />
               </Field>
 
               <Button disabled={isSubmitting} className="w-full" type="submit">
-                Submit
+                {isSubmitting ? (
+                  <>
+                    <Spinner />
+                    <span>Submitting...</span>
+                  </>
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </form>
           </div>
