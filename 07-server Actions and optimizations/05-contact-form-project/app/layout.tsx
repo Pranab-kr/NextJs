@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AnchoredToastProvider, ToastProvider } from "@/components/ui/toast";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <nav className="absolute top-4 right-4">
+                <ModeToggle />
+              </nav>
               {children}
             </ThemeProvider>
           </AnchoredToastProvider>

@@ -5,7 +5,6 @@ import { Button } from "./ui/button";
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardPanel,
   CardTitle,
