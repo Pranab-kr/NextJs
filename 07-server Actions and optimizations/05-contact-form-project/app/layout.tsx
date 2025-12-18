@@ -30,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToastProvider position="top-right">
+        <ToastProvider position="bottom-right">
           <AnchoredToastProvider>
             <ThemeProvider
               attribute="class"
