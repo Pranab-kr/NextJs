@@ -2,6 +2,7 @@ import ContactForm from "@/components/ContactForm";
 import { ModeToggle } from "@/components/mode-toggle";
 
 const HomePage = () => {
+
   return (
     <main className="min-h-screen px-4 py-12 flex flex-col items-center gap-12">
 

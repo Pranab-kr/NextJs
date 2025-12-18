@@ -2,8 +2,9 @@
 
 import { connectToDB } from "@/lib/db";
 import { Contact } from "@/model/contact";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
+// Create a new contact entry
 export async function createContact(formData: FormData) {
   const name = (formData.get("name") ?? "").toString().trim();
   const email = (formData.get("email") ?? "").toString().trim();
@@ -35,6 +36,7 @@ export async function createContact(formData: FormData) {
   }
 }
 
+// Fetch all contacts from the database
 export async function getAllContacts() {
   try {
     await connectToDB();
@@ -58,6 +60,7 @@ export async function getAllContacts() {
   }
 }
 
+// Update contact status and revalidate path and tags cache
 export async function updateContactStatus(contactId: string, status: string) {
   try {
     await connectToDB();
@@ -70,6 +73,7 @@ export async function updateContactStatus(contactId: string, status: string) {
     await contact.save();
 
     revalidatePath("/contacts");
+    revalidateTag("contacts-stats", "max");
 
     return { success: true, message: "Contact status updated successfully." };
   } catch (error) {
@@ -78,12 +82,35 @@ export async function updateContactStatus(contactId: string, status: string) {
   }
 }
 
+// Mark contact as read
 export async function markAsRead(formData: FormData) {
   const contactId = formData.get("contactId") as string;
   return updateContactStatus(contactId, "read");
 }
 
+// Mark contact as replied
 export async function markAsReplied(formData: FormData) {
   const contactId = formData.get("contactId") as string;
   return updateContactStatus(contactId, "replied");
+}
+
+// Get contact statistics and cache the results
+export async function getContactStats() {
+  const getCachedStats = unstable_cache(
+    async () => {
+      await connectToDB();
+      const totalContacts = await Contact.countDocuments();
+      const newContacts = await Contact.countDocuments({ status: "new" });
+      const readContacts = await Contact.countDocuments({ status: "read" });
+      const repliedContacts = await Contact.countDocuments({
+        status: "replied",
+      });
+
+      return { totalContacts, newContacts, readContacts, repliedContacts };
+    },
+    ["contacts-stats-cache"],
+    { tags: ["contacts-stats"] }
+  );
+
+  return getCachedStats();
 }
