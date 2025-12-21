@@ -40,11 +40,11 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <div>
+            
               <nav className="absolute top-4 right-4">
                 <ModeToggle />
               </nav>
-            </div>
+            
           </ThemeProvider>
         </QueryProvider>
       </body>
