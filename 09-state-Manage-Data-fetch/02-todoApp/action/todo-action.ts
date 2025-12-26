@@ -1,31 +1,43 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import { connectDB } from "@/lib/db";
-import { todoSchema } from "@//validations/todo";
+import { todoSchema } from "@/validations/todo";
 import { Todo } from "@/model/todo";
 import z from "zod";
 
-export const createTodoAction = async (formData: FormData) => {
+type TodoInput = z.input<typeof todoSchema>;
+
+export const createTodoAction = async (data: TodoInput) => {
   try {
-    const validatedData = todoSchema.parse({
-      title: formData.get("title"),
-      description: formData.get("description"),
-    });
+    const validatedData = todoSchema.parse(data);
 
     await connectDB();
     const createdTodo = await Todo.create({
-      data: {
-        title: validatedData.title,
-        description: validatedData.description,
-      },
+      title: validatedData.title,
+      description: validatedData.description,
+      priority: validatedData.priority,
+      completed: validatedData.completed,
     });
 
-    revalidatePath("/");
     return { success: true, data: JSON.stringify(createdTodo) };
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error("Validation Error:", error.issues);
     }
+    console.error("Error creating todo:", error);
     return { success: false, error: "Failed to create todo." };
+  }
+};
+
+export const getallTodosAction = async () => {
+  try {
+    await connectDB();
+
+    const todos = await Todo.find().sort({ createdAt: -1 });
+
+    return { success: true, data: JSON.stringify(todos) };
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+
+    return { success: false, error: "Failed to fetch todos." };
   }
 };

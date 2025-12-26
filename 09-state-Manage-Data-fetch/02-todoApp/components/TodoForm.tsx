@@ -27,7 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus } from "lucide-react";
 
-type TodoFormData = z.infer<typeof todoSchema>;
+type TodoFormData = z.input<typeof todoSchema>;
 
 const TodoForm = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -44,6 +44,7 @@ const TodoForm = () => {
     defaultValues: {
       title: "",
       description: "",
+      completed: false,
       priority: "medium",
     },
   });
@@ -66,8 +67,8 @@ const TodoForm = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="w-full sm:w-auto">
-        <Button className="w-full sm:w-auto">
+      <DialogTrigger className="min-w-full sm:w-auto">
+        <Button className="sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Todo
         </Button>
