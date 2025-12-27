@@ -22,7 +22,7 @@ export const useCreateTodo = () => {
       if (result.success && result.data) {
         const todo = JSON.parse(result.data);
         addTodo(todo);
-        queryCliet.invalidateQueries({ queryKey: todoKeys.lists() });
+        queryCliet.invalidateQueries({ queryKey: todoKeys.all });
       }
     },
   });

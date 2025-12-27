@@ -19,6 +19,7 @@ interface TodoState {
   setFilter: (filter: string) => void;
   setTodos: (todos: Todo[]) => void;
   addTodo: (todo: Todo) => void;
+  updateTodo: (id: string, data: Partial<Todo>) => void;
   removeTodo: (id: string) => void;
   setLoading: (isLoading: boolean) => void;
 }
@@ -27,7 +28,7 @@ export const useTodosStore = create<TodoState>()(
   devtools(
     (set, get) => ({
       todos: [],
-
+      filter: "all",
       isLoading: false,
 
       setTodos: (todos: Todo[]) => set({ todos }),
@@ -35,6 +36,14 @@ export const useTodosStore = create<TodoState>()(
       addTodo: (todo: Todo) =>
         set((state) => ({ todos: [...state.todos, todo] })),
 
+      updateTodo: (id: string, data: Partial<Todo>) =>
+        set((state) => ({
+          todos: state.todos.map((todo) =>
+            todo.id === id ? { ...todo, ...data } : todo
+          ),
+        })),
+
+      setFilter: (filter: string) => set({ filter }),
 
       setLoading: (isLoading: boolean) => set({ isLoading }),
 
